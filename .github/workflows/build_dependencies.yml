@@ -1,0 +1,21 @@
+name: Build Dependencies
+on:
+  push:
+jobs:
+  build-vst3sdk:
+    name: VST3SDK
+    runs-on: windows-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v4.2.2
+        with:
+          submodules: recursive
+
+      - name: Build VST3SDK
+        uses: threeal/cmake-action@v2.1.0
+        with:
+          source-dir: vendor/vst3sdk
+          build-dir: vendor/build
+          generator: Visual Studio 17 2022
+          options: |
+            SMTG_CREATE_PLUGIN_LINK=0
