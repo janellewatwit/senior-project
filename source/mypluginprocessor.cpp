@@ -86,6 +86,17 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 	}*/
 	
 	//--- Here you have to implement your processing
+	for (int o = 0; o < data.numOutputs; o++)
+	{
+		for (int c = 0; c < data.outputs[o].numChannels; c++)
+		{
+			for (int s = 0; s < data.numSamples; s++)
+			{
+				const float sample = sin((2*3.141592f*60/41000)*s); // test 60Hz sin wave (not working)
+				data.outputs[o].channelBuffers32[c][s] = sample;
+			}
+		}
+	}
 
 	return kResultOk;
 }
