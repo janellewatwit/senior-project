@@ -5,6 +5,7 @@
 #pragma once
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
+#include "audio/Oscillator.h"
 
 namespace SeniorProject {
 
@@ -50,7 +51,7 @@ public:
 
 //------------------------------------------------------------------------
 protected:
-
+	Oscillator osc_1 = Oscillator(500.0f);
 };
 
 //------------------------------------------------------------------------
