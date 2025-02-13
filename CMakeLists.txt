@@ -27,6 +27,7 @@ smtg_add_vst3plugin(SeniorProject
     source/myplugincontroller.h
     source/myplugincontroller.cpp
     source/mypluginentry.cpp
+	source/audio/constants.h
 	source/audio/Oscillator.h
 	source/audio/Oscillator.cpp
 )

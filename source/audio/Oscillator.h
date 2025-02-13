@@ -5,8 +5,8 @@
 class Oscillator
 {
 private:
-	// sample rate of host
-	double m_sample_rate = 44100.0;
+	float m_frequency = 0.0f;
+	float m_sample_rate = 1.0f;
 	// table containing sampled sine wave
 	float* m_table = nullptr;
 	// bits used to index `m_table`
@@ -18,9 +18,13 @@ private:
 	// change in phase per sample
 	uint32_t m_phase_delta = 0U;
 
+	// update m_phase_delta after changing frequency or sample rate
+	void updatePhaseDelta();
+
 public:
-	Oscillator(float frequency);
+	Oscillator();
 	~Oscillator();
-	virtual void setFrequency(const float freq);
+	void setFrequency(const float freq);
+	void setSampleRate(const float sample_rate);
 	virtual float sample();
 };

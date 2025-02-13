@@ -1,6 +1,6 @@
 #include "Oscillator.h"
 
-Oscillator::Oscillator(float frequency)
+Oscillator::Oscillator()
 {
 	// populate sine wave table
 	m_table = new float[m_table_len];
@@ -8,20 +8,33 @@ Oscillator::Oscillator(float frequency)
 		m_table[i] = sin(2.0f * 3.1415927f * i / m_table_len);
 
 	// set initial oscillator frequency
-	setFrequency(frequency);
+	updatePhaseDelta();
 }
 
 Oscillator::~Oscillator()
 {
-	delete[] m_table;
+	// if (m_table != nullptr)
+	// 	delete[] m_table;
 }
 
-void Oscillator::setFrequency(const float freq)
+void Oscillator::updatePhaseDelta()
 {
 	// ratio of oscillator frequency over sample rate
-	const float freq_ratio = freq / m_sample_rate;
-	// freq_ratio * 2^32. Because (1 << 32) overflows.
-	m_phase_delta = (uint32_t)(freq_ratio * 2.0f * (1U << (sizeof(uint32_t)*8U-1U)));
+	const float freq_ratio = m_frequency / m_sample_rate;
+	// Moves fractional portion to integer, truncating whole number portion
+	m_phase_delta = (uint32_t)(freq_ratio * ((uint64_t)1 << (sizeof(uint32_t)*8U)));
+}
+
+void Oscillator::setFrequency(const float frequency)
+{
+	m_frequency = frequency;
+	updatePhaseDelta();
+}
+
+void Oscillator::setSampleRate(const float sampleRate)
+{
+	m_sample_rate = sampleRate;
+	updatePhaseDelta();
 }
 
 float Oscillator::sample()

@@ -7,6 +7,7 @@
 
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
+#include <algorithm>
 
 using namespace Steinberg;
 
@@ -43,6 +44,11 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 
 	/* If you don't need an event bus, you can remove the next line */
 	addEventInput (STR16 ("Event In"), 1);
+
+	oscillators.emplace_back();
+	oscillators[0].setFrequency(500.0f);
+	oscillators.emplace_back();
+	oscillators[1].setFrequency(1000.0f);
 
 	return kResultOk;
 }
@@ -91,16 +97,20 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 	for (int s = 0; s < data.numSamples; s++)
 	{
 		// sample oscillator
-		const float sample = osc_1.sample();
-		const float gain = 0.7;
-		const float output = sample * gain;
-		
+		float sample = 0.0f;
+		for (Oscillator& osc : oscillators)
+		{
+			sample += osc.sample() / oscillators.size();
+		}
+		const float gain = 1.0f;
+		sample *= gain;
+
 		// write sample to each channel of each output
 		for (int o = 0; o < data.numOutputs; o++)
 		{
 			for (int c = 0; c < data.outputs[o].numChannels; c++)
 			{
-				data.outputs[o].channelBuffers32[c][s] = output;
+				data.outputs[o].channelBuffers32[c][s] = sample;
 			}
 		}
 	}
@@ -112,6 +122,8 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 tresult PLUGIN_API SeniorProjectProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	//--- called before any processing ----
+	for (Oscillator& osc : oscillators)
+		osc.setSampleRate(newSetup.sampleRate);
 	return AudioEffect::setupProcessing (newSetup);
 }
 
