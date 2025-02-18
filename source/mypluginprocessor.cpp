@@ -8,6 +8,7 @@
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include <algorithm>
+#include "audio/constants.h"
 
 using namespace Steinberg;
 
@@ -45,9 +46,9 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 	/* If you don't need an event bus, you can remove the next line */
 	addEventInput (STR16 ("Event In"), 1);
 
-	oscillators.emplace_back();
+	oscillators.emplace_back(m_wavetable);
 	oscillators[0].setFrequency(500.0f);
-	oscillators.emplace_back();
+	oscillators.emplace_back(m_wavetable);
 	oscillators[1].setFrequency(1000.0f);
 
 	return kResultOk;
@@ -74,7 +75,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 {
 	//--- First : Read inputs parameter changes-----------
 
-    /*if (data.inputParameterChanges)
+    if (data.inputParameterChanges)
     {
         int32 numParamsChanged = data.inputParameterChanges->getParameterCount ();
         for (int32 index = 0; index < numParamsChanged; index++)
@@ -86,10 +87,14 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
                 int32 numPoints = paramQueue->getPointCount ();
                 switch (paramQueue->getParameterId ())
                 {
+					case VolumeParamID:
+						if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
+							m_gain = (float)value;
+						break;
 				}
 			}
 		}
-	}*/
+	}
 	
 	//--- Here you have to implement your processing
 
@@ -102,8 +107,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 		{
 			sample += osc.sample() / oscillators.size();
 		}
-		const float gain = 1.0f;
-		sample *= gain;
+		sample *= m_gain;
 
 		// write sample to each channel of each output
 		for (int o = 0; o < data.numOutputs; o++)

@@ -5,6 +5,7 @@
 #include "myplugincontroller.h"
 #include "myplugincids.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
+#include "audio/constants.h"
 
 using namespace Steinberg;
 
@@ -25,6 +26,7 @@ tresult PLUGIN_API SeniorProjectController::initialize (FUnknown* context)
 	}
 
 	// Here you could register some parameters
+	parameters.addParameter(STR16("Volume"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, VolumeParamID);
 
 	return result;
 }

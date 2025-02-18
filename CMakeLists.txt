@@ -30,6 +30,8 @@ smtg_add_vst3plugin(SeniorProject
 	source/audio/constants.h
 	source/audio/Oscillator.h
 	source/audio/Oscillator.cpp
+	source/audio/SineWaveTable.h
+	source/audio/SineWaveTable.cpp
 )
 
 #- VSTGUI Wanted ----
