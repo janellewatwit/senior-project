@@ -53,8 +53,8 @@ public:
 //------------------------------------------------------------------------
 protected:
 	SineWaveTable m_wavetable = SineWaveTable(16U);
-	std::vector<Oscillator> oscillators;
-	Steinberg::Vst::ParamValue m_gain = 1.0;
+	std::vector<Oscillator> m_oscillators;
+	Steinberg::Vst::ParamValue m_master_volume = 1.0;
 };
 
 //------------------------------------------------------------------------

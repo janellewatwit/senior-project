@@ -6,6 +6,8 @@
 #include "myplugincids.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include "audio/constants.h"
+#include "ui/UIView.h"
+#include "utils/conv.h"
 
 using namespace Steinberg;
 
@@ -27,6 +29,13 @@ tresult PLUGIN_API SeniorProjectController::initialize (FUnknown* context)
 
 	// Here you could register some parameters
 	parameters.addParameter(STR16("Volume"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, VolumeParamID);
+	for(int i = 0; i < NUM_OSCILLATORS; i++)
+	{
+		std::string param_name = "Osc_";
+		param_name += std::to_string(i+1);
+		param_name += " gain";
+		parameters.addParameter(stoc16(param_name), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, 1000+i);
+	}
 
 	return result;
 }

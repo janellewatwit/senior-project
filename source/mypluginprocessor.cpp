@@ -46,10 +46,13 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 	/* If you don't need an event bus, you can remove the next line */
 	addEventInput (STR16 ("Event In"), 1);
 
-	oscillators.emplace_back(m_wavetable);
-	oscillators[0].setFrequency(500.0f);
-	oscillators.emplace_back(m_wavetable);
-	oscillators[1].setFrequency(1000.0f);
+	float base_freq = 300.0f;
+	for (int i = 0; i < NUM_OSCILLATORS; i++)
+	{
+		m_oscillators.emplace_back(m_wavetable);
+		m_oscillators[i].setFrequency(base_freq * (i+1));
+		m_oscillators[i].setGain(1.0);
+	}
 
 	return kResultOk;
 }
@@ -74,7 +77,6 @@ tresult PLUGIN_API SeniorProjectProcessor::setActive (TBool state)
 tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 {
 	//--- First : Read inputs parameter changes-----------
-
     if (data.inputParameterChanges)
     {
         int32 numParamsChanged = data.inputParameterChanges->getParameterCount ();
@@ -89,25 +91,32 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
                 {
 					case VolumeParamID:
 						if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
-							m_gain = (float)value;
+							m_master_volume = (float)value;
 						break;
+				}
+
+				const Steinberg::Vst::ParamID paramID = paramQueue->getParameterId();
+				if (paramID >= 1000 && paramID < 1064)
+				{
+					const int idx = paramID - 1000;
+					if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
+						m_oscillators[idx].setGain(value);
 				}
 			}
 		}
 	}
 	
 	//--- Here you have to implement your processing
-
 	// iterate samples in buffer
 	for (int s = 0; s < data.numSamples; s++)
 	{
 		// sample oscillator
 		float sample = 0.0f;
-		for (Oscillator& osc : oscillators)
+		for (Oscillator& osc : m_oscillators)
 		{
-			sample += osc.sample() / oscillators.size();
+			sample += osc.sample() / m_oscillators.size();
 		}
-		sample *= m_gain;
+		sample *= m_master_volume;
 
 		// write sample to each channel of each output
 		for (int o = 0; o < data.numOutputs; o++)
@@ -126,7 +135,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 tresult PLUGIN_API SeniorProjectProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	//--- called before any processing ----
-	for (Oscillator& osc : oscillators)
+	for (Oscillator& osc : m_oscillators)
 		osc.setSampleRate(newSetup.sampleRate);
 	return AudioEffect::setupProcessing (newSetup);
 }

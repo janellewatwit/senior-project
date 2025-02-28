@@ -1,6 +1,6 @@
 #include "Oscillator.h"
 
-Oscillator::Oscillator(SineWaveTable& const wavetable) : m_wavetable(wavetable)
+Oscillator::Oscillator(SineWaveTable& wavetable) : m_wavetable(wavetable)
 {
 	updatePhaseDelta();
 }
@@ -25,9 +25,14 @@ void Oscillator::setSampleRate(const float sampleRate)
 	updatePhaseDelta();
 }
 
+void Oscillator::setGain(const double gain)
+{
+	m_gain = gain;
+}
+
 float Oscillator::sample()
 {
 	// increment phase by delta
 	m_phase_accumulator += m_phase_delta;
-	return m_wavetable.sample(m_phase_accumulator);
+	return m_wavetable.sample(m_phase_accumulator) * m_gain;
 }

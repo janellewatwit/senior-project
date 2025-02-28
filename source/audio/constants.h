@@ -2,4 +2,5 @@
 #include <cstdint>
 
 constexpr double PI = 3.141592653589793;
-constexpr uint32_t VolumeParamID = 100U;
+constexpr uint8_t NUM_OSCILLATORS = 64U;
+constexpr Steinberg::Vst::ParamID VolumeParamID = 100U;
