@@ -9,6 +9,7 @@
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include <algorithm>
 #include "audio/constants.h"
+#include "public.sdk/source/vst/vsteventshelper.h"
 
 using namespace Steinberg;
 
@@ -45,14 +46,6 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 
 	/* If you don't need an event bus, you can remove the next line */
 	addEventInput (STR16 ("Event In"), 1);
-
-	float base_freq = 300.0f;
-	for (int i = 0; i < NUM_OSCILLATORS; i++)
-	{
-		m_oscillators.emplace_back(m_wavetable);
-		m_oscillators[i].setFrequency(base_freq * (i+1));
-		m_oscillators[i].setGain(1.0);
-	}
 
 	return kResultOk;
 }
@@ -100,22 +93,36 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 				{
 					const int idx = paramID - 1000;
 					if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
-						m_oscillators[idx].setGain(value);
+						m_voice.m_oscillators[idx].setGain(value);
 				}
 			}
 		}
 	}
-	
+
+	if(data.inputEvents)
+	{
+		for(int i = 0; i < data.inputEvents->getEventCount(); i++)
+		{
+			Steinberg::Vst::Event e;
+			data.inputEvents->getEvent(i, e);
+			if(e.type == Steinberg::Vst::Event::kNoteOnEvent)
+			{
+				m_master_volume = 1.0;
+				m_voice.setFrequencyByMIDI(e.noteOn.pitch);
+			}
+			if(e.type == Steinberg::Vst::Event::kNoteOffEvent)
+			{
+				m_master_volume = 0.0;
+			}
+		}
+	}
+
 	//--- Here you have to implement your processing
 	// iterate samples in buffer
 	for (int s = 0; s < data.numSamples; s++)
 	{
 		// sample oscillator
-		float sample = 0.0f;
-		for (Oscillator& osc : m_oscillators)
-		{
-			sample += osc.sample() / m_oscillators.size();
-		}
+		float sample = m_voice.sample();
 		sample *= m_master_volume;
 
 		// write sample to each channel of each output
@@ -135,8 +142,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 tresult PLUGIN_API SeniorProjectProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	//--- called before any processing ----
-	for (Oscillator& osc : m_oscillators)
-		osc.setSampleRate(newSetup.sampleRate);
+	m_voice.setSampleRate(newSetup.sampleRate);
 	return AudioEffect::setupProcessing (newSetup);
 }
 

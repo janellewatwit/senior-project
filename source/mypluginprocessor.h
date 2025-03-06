@@ -7,6 +7,7 @@
 #include "public.sdk/source/vst/vstaudioeffect.h"
 #include "audio/Oscillator.h"
 #include "audio/SineWaveTable.h"
+#include "audio/Voice.h"
 
 namespace SeniorProject {
 
@@ -52,9 +53,8 @@ public:
 
 //------------------------------------------------------------------------
 protected:
-	SineWaveTable m_wavetable = SineWaveTable(16U);
-	std::vector<Oscillator> m_oscillators;
-	Steinberg::Vst::ParamValue m_master_volume = 1.0;
+	Voice m_voice = Voice(64U);
+	Steinberg::Vst::ParamValue m_master_volume = 0.0;
 };
 
 //------------------------------------------------------------------------
