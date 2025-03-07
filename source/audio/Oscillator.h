@@ -29,4 +29,5 @@ public:
 	void setSampleRate(const float sample_rate);
 	void setGain(const double gain);
 	float sample();
+	void resetPhase();
 };

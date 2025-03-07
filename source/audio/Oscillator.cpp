@@ -34,5 +34,10 @@ float Oscillator::sample()
 {
 	// increment phase by delta
 	m_phase_accumulator += m_phase_delta;
-	return m_wavetable.sample(m_phase_accumulator) * m_gain;
+	return m_wavetable.sample(m_phase_accumulator) * (float)m_gain;
+}
+
+void Oscillator::resetPhase()
+{
+	m_phase_accumulator = 0U;
 }

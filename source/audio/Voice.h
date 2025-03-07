@@ -7,9 +7,11 @@ class Voice
 {
 private:
 	SineWaveTable m_wavetable = SineWaveTable(16U);
+	std::vector<Oscillator> m_oscillators;
 
 public:
-	std::vector<Oscillator> m_oscillators;
+	int32_t m_noteId = -1;
+	float m_gain = 0.0f;
 	Voice(int16_t num_oscillators);
 
 	void setFrequencyByMIDI(uint16_t midi);

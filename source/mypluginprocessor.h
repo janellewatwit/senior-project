@@ -53,8 +53,8 @@ public:
 
 //------------------------------------------------------------------------
 protected:
-	Voice m_voice = Voice(64U);
-	Steinberg::Vst::ParamValue m_master_volume = 0.0;
+	std::vector<Voice> m_voices;
+	Steinberg::Vst::ParamValue m_master_volume = 1.0;
 };
 
 //------------------------------------------------------------------------

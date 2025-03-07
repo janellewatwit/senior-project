@@ -47,6 +47,11 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 	/* If you don't need an event bus, you can remove the next line */
 	addEventInput (STR16 ("Event In"), 1);
 
+	for (int i = 0; i < 1; i++)
+	{
+		m_voices.emplace_back(64U);
+	}
+
 	return kResultOk;
 }
 
@@ -88,13 +93,13 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 						break;
 				}
 
-				const Steinberg::Vst::ParamID paramID = paramQueue->getParameterId();
-				if (paramID >= 1000 && paramID < 1064)
-				{
-					const int idx = paramID - 1000;
-					if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
-						m_voice.m_oscillators[idx].setGain(value);
-				}
+				// const Steinberg::Vst::ParamID paramID = paramQueue->getParameterId();
+				// if (paramID >= 1000 && paramID < 1064)
+				// {
+				// 	const int idx = paramID - 1000;
+				// 	if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
+				// 		m_voice.m_oscillators[idx].setGain(value);
+				// }
 			}
 		}
 	}
@@ -107,12 +112,27 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 			data.inputEvents->getEvent(i, e);
 			if(e.type == Steinberg::Vst::Event::kNoteOnEvent)
 			{
-				m_master_volume = 1.0;
-				m_voice.setFrequencyByMIDI(e.noteOn.pitch);
+				for(Voice& v : m_voices)
+				{
+					if (v.m_noteId == -1)
+					{
+						v.setFrequencyByMIDI(e.noteOn.pitch);
+						v.m_noteId = e.noteOn.pitch;
+						v.m_gain = 1.0f;
+						break;
+					}
+				}
 			}
 			if(e.type == Steinberg::Vst::Event::kNoteOffEvent)
 			{
-				m_master_volume = 0.0;
+				for(Voice& v : m_voices)
+				{
+					if (v.m_noteId == e.noteOff.pitch)
+					{
+						v.m_noteId = -1;
+						v.m_gain = 0.0f;
+					}
+				}
 			}
 		}
 	}
@@ -122,7 +142,11 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 	for (int s = 0; s < data.numSamples; s++)
 	{
 		// sample oscillator
-		float sample = m_voice.sample();
+		float sample = 0.0f;
+		for (Voice& v : m_voices)
+		{
+			sample += v.sample();
+		}
 		sample *= m_master_volume;
 
 		// write sample to each channel of each output
@@ -142,7 +166,10 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 tresult PLUGIN_API SeniorProjectProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	//--- called before any processing ----
-	m_voice.setSampleRate(newSetup.sampleRate);
+	for(Voice& v : m_voices)
+	{
+		v.setSampleRate(newSetup.sampleRate);
+	}
 	return AudioEffect::setupProcessing (newSetup);
 }
 

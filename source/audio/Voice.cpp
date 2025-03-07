@@ -11,10 +11,11 @@ Voice::Voice(int16_t num_oscillators)
 
 void Voice::setFrequencyByMIDI(uint16_t midi)
 {
-	float baseFrequency = 440.0f * pow(2.0, (midi - 69.0) / 12.0);
+	float baseFrequency = 440.0f * (float)pow(2.0, (midi - 69.0) / 12.0);
 	for (int i = 0; i < m_oscillators.size(); i++)
 	{
 		m_oscillators[i].setFrequency(baseFrequency * (i+1));
+		m_oscillators[i].resetPhase();
 	}
 }
 
@@ -31,5 +32,5 @@ float Voice::sample()
 	{
 		sample += osc.sample() / m_oscillators.size();
 	}
-	return sample;
+	return sample * m_gain;
 }
