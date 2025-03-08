@@ -53,6 +53,7 @@ public:
 
 //------------------------------------------------------------------------
 protected:
+	SineWaveTable m_wavetable = SineWaveTable(16U);
 	std::vector<Voice> m_voices;
 	Steinberg::Vst::ParamValue m_master_volume = 1.0;
 };

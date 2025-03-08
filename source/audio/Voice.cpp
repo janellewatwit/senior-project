@@ -1,6 +1,6 @@
 #include "Voice.h"
 
-Voice::Voice(int16_t num_oscillators)
+Voice::Voice(SineWaveTable& wt, int16_t num_oscillators) : m_wavetable(wt)
 {
 	for (int i = 0; i < num_oscillators; i++)
 	{

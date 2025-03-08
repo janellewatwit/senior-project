@@ -47,9 +47,10 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 	/* If you don't need an event bus, you can remove the next line */
 	addEventInput (STR16 ("Event In"), 1);
 
-	for (int i = 0; i < 1; i++)
+	
+	for (int i = 0; i < 8; i++)
 	{
-		m_voices.emplace_back(64U);
+		m_voices.emplace_back(m_wavetable, 64U);
 	}
 
 	return kResultOk;
