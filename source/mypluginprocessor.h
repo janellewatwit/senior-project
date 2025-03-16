@@ -8,6 +8,8 @@
 #include "audio/Oscillator.h"
 #include "audio/SineWaveTable.h"
 #include "audio/Voice.h"
+#include <fstream>
+#include <chrono>
 
 namespace SeniorProject {
 
@@ -56,6 +58,10 @@ protected:
 	SineWaveTable m_wavetable = SineWaveTable(16U);
 	std::vector<Voice> m_voices;
 	Steinberg::Vst::ParamValue m_master_volume = 1.0;
+
+	// logging
+	std::ofstream m_logfile;
+	std::chrono::high_resolution_clock m_timer;
 };
 
 //------------------------------------------------------------------------

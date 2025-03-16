@@ -47,11 +47,13 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 	/* If you don't need an event bus, you can remove the next line */
 	addEventInput (STR16 ("Event In"), 1);
 
-	
-	for (int i = 0; i < 8; i++)
+	m_voices.reserve(NUM_VOICES);
+	for (int i = 0; i < NUM_VOICES; i++)
 	{
 		m_voices.emplace_back(m_wavetable, 64U);
 	}
+
+	m_logfile.open(LOGFILE);
 
 	return kResultOk;
 }
@@ -60,7 +62,8 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 tresult PLUGIN_API SeniorProjectProcessor::terminate ()
 {
 	// Here the Plug-in will be de-instantiated, last possibility to remove some memory!
-	
+	m_logfile.close();
+
 	//---do not forget to call parent ------
 	return AudioEffect::terminate ();
 }
@@ -75,6 +78,7 @@ tresult PLUGIN_API SeniorProjectProcessor::setActive (TBool state)
 //------------------------------------------------------------------------
 tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 {
+	auto tStart = m_timer.now();
 	//--- First : Read inputs parameter changes-----------
     if (data.inputParameterChanges)
     {
@@ -140,13 +144,17 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 
 	//--- Here you have to implement your processing
 	// iterate samples in buffer
+	int active_voices = 0;
+	for (Voice& v : m_voices)
+		if (v.m_noteId != -1) active_voices++;
 	for (int s = 0; s < data.numSamples; s++)
 	{
 		// sample oscillator
 		float sample = 0.0f;
 		for (Voice& v : m_voices)
 		{
-			sample += v.sample();
+			if(v.m_noteId != -1)
+				sample += v.sample();
 		}
 		sample *= m_master_volume;
 
@@ -159,6 +167,12 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 			}
 		}
 	}
+	auto tEnd = m_timer.now();
+	auto duration = tEnd - tStart;
+	m_logfile << active_voices;
+	m_logfile << ":";
+	m_logfile << duration.count();
+	m_logfile << "\n";
 
 	return kResultOk;
 }
