@@ -140,7 +140,7 @@ IPlugView* PLUGIN_API SeniorProjectController::createView (FIDString name)
 	if (FIDStringsEqual (name, Vst::ViewType::kEditor))
 	{
 		// create your editor here and return a IPlugView ptr of it
-		auto* view = new VSTGUI::VST3Editor (this, "view", "view.uidesc");
+		auto* view = new VSTGUI::VST3Editor (this, "main", "myplugineditor.uidesc");
 		return view;
 	}
 	return nullptr;
