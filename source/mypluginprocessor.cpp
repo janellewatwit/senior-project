@@ -43,17 +43,7 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 	//--- create Audio IO ------
 	addAudioInput (STR16 ("Stereo In"), Steinberg::Vst::SpeakerArr::kStereo);
 	addAudioOutput (STR16 ("Stereo Out"), Steinberg::Vst::SpeakerArr::kStereo);
-
-	/* If you don't need an event bus, you can remove the next line */
 	addEventInput (STR16 ("Event In"), 1);
-
-	m_voices.reserve(NUM_VOICES);
-	for (int i = 0; i < NUM_VOICES; i++)
-	{
-		m_voices.emplace_back(m_wavetable, 64U);
-	}
-
-	m_logfile.open(LOGFILE);
 
 	return kResultOk;
 }
@@ -62,7 +52,6 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 tresult PLUGIN_API SeniorProjectProcessor::terminate ()
 {
 	// Here the Plug-in will be de-instantiated, last possibility to remove some memory!
-	m_logfile.close();
 
 	//---do not forget to call parent ------
 	return AudioEffect::terminate ();
@@ -78,7 +67,10 @@ tresult PLUGIN_API SeniorProjectProcessor::setActive (TBool state)
 //------------------------------------------------------------------------
 tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 {
-	auto tStart = m_timer.now();
+#ifdef PROFILING
+	m_timer.start();
+#endif
+
 	//--- First : Read inputs parameter changes-----------
     if (data.inputParameterChanges)
     {
@@ -144,9 +136,6 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 
 	//--- Here you have to implement your processing
 	// iterate samples in buffer
-	int active_voices = 0;
-	for (Voice& v : m_voices)
-		if (v.m_noteId != -1) active_voices++;
 	for (int s = 0; s < data.numSamples; s++)
 	{
 		// sample oscillator
@@ -167,12 +156,17 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 			}
 		}
 	}
-	auto tEnd = m_timer.now();
-	auto duration = tEnd - tStart;
-	m_logfile << active_voices;
-	m_logfile << ":";
-	m_logfile << duration.count();
-	m_logfile << "\n";
+
+#ifdef PROFILING
+	int active_voices = 0;
+	for (Voice& v : m_voices)
+		if (v.m_noteId != -1) active_voices++;
+	m_timer.end();
+	m_logger.stream() << active_voices;
+	m_logger.stream() << ":";
+	m_logger.stream() << m_timer.duration_ns();
+	m_logger.stream() << "\n";
+#endif
 
 	return kResultOk;
 }

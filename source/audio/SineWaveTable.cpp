@@ -1,24 +1,23 @@
 #pragma once
 #include "SineWaveTable.h"
+#include "constants.h"
 
-SineWaveTable::SineWaveTable(const uint8_t lookup_bits) :
-	m_lookup_bits(lookup_bits),
-	m_len(1U << lookup_bits),
-	m_table(new float[m_len])
-{
-	// populate sine wave table
-	for (uint32_t i = 0; i < m_len; i++)
-		m_table[i] = sin(2.0f * 3.1415927f * i / m_len);
-}
+float* SineWaveTable::m_table = nullptr;
 
-SineWaveTable::~SineWaveTable()
+SineWaveTable::SineWaveTable() : m_len(1U << WAVETABLE_LOOKUP_BITS)
 {
-	delete[] m_table;
+	if (m_table == nullptr)
+	{
+		// populate sine wave table
+		m_table = new float[m_len];
+		for (uint32_t i = 0; i < m_len; i++)
+			m_table[i] = sin(2.0f * 3.1415927f * i / m_len);
+	}
 }
 
 const float SineWaveTable::sample(uint32_t index)
 {
-	index = index >> (sizeof(uint32_t) * 8U - m_lookup_bits);
-	index &= (1U << m_lookup_bits) - 1U;
+	index = index >> (sizeof(uint32_t) * 8U - WAVETABLE_LOOKUP_BITS);
+	index &= (1U << WAVETABLE_LOOKUP_BITS) - 1U;
 	return m_table[index];
 }

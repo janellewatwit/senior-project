@@ -8,8 +8,9 @@
 #include "audio/Oscillator.h"
 #include "audio/SineWaveTable.h"
 #include "audio/Voice.h"
-#include <fstream>
-#include <chrono>
+#include "utils/Logger.h"
+#include "utils/Timer.h"
+#include <array>
 
 namespace SeniorProject {
 
@@ -55,13 +56,13 @@ public:
 
 //------------------------------------------------------------------------
 protected:
-	SineWaveTable m_wavetable = SineWaveTable(16U);
-	std::vector<Voice> m_voices;
+	std::array<Voice, NUM_VOICES> m_voices;
 	Steinberg::Vst::ParamValue m_master_volume = 1.0;
 
-	// logging
-	std::ofstream m_logfile;
-	std::chrono::high_resolution_clock m_timer;
+#ifdef PROFILING
+	Logger m_logger = Logger("path");
+	Timer m_timer;
+#endif
 };
 
 //------------------------------------------------------------------------

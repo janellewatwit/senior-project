@@ -11,7 +11,7 @@ private:
 	// host sample rate
 	float m_sample_rate = 1.0f;
 	// wavetable to sample
-	SineWaveTable& m_wavetable;
+	SineWaveTable m_wavetable;
 	// change in phase per sample
 	uint32_t m_phase_delta = 0U;
 	// current phase of oscillator: 0 = 0%, 2^32 = 100%
@@ -24,7 +24,7 @@ private:
 	void updatePhaseDelta();
 
 public:
-	Oscillator(SineWaveTable& wavetable);
+	Oscillator();
 	void setFrequency(const float freq);
 	void setSampleRate(const float sample_rate);
 	void setGain(const double gain);

@@ -34,6 +34,11 @@ smtg_add_vst3plugin(SeniorProject
 	source/audio/SineWaveTable.cpp
 	source/audio/Voice.h
 	source/audio/Voice.cpp
+	source/utils/conv.h
+	source/utils/Logger.h
+	source/utils/Logger.cpp
+	source/utils/Timer.h
+	source/utils/Timer.cpp
 )
 
 #- VSTGUI Wanted ----

@@ -1,13 +1,5 @@
 #include "Voice.h"
-
-Voice::Voice(SineWaveTable& wt, int16_t num_oscillators) : m_wavetable(wt)
-{
-	for (int i = 0; i < num_oscillators; i++)
-	{
-		m_oscillators.emplace_back(m_wavetable);
-		m_oscillators[i].setGain(1.0);
-	}
-}
+#include "constants.h"
 
 void Voice::setFrequencyByMIDI(uint16_t midi)
 {

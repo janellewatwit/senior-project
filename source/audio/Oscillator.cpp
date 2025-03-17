@@ -1,6 +1,6 @@
 #include "Oscillator.h"
 
-Oscillator::Oscillator(SineWaveTable& wavetable) : m_wavetable(wavetable)
+Oscillator::Oscillator()
 {
 	updatePhaseDelta();
 }

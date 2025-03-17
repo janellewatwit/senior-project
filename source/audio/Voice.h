@@ -1,22 +1,19 @@
 #pragma once
 #include "SineWaveTable.h"
-#include <vector>
+#include <array>
 #include "Oscillator.h"
+#include "constants.h"
 
 class Voice
 {
 private:
-	SineWaveTable& m_wavetable;
-	std::vector<Oscillator> m_oscillators;
+	std::array<Oscillator, NUM_OSCILLATORS> m_oscillators;
 
 public:
 	int32_t m_noteId = -1;
 	float m_gain = 0.0f;
-	Voice(SineWaveTable& wt, int16_t num_oscillators);
 
 	void setFrequencyByMIDI(uint16_t midi);
-
 	void setSampleRate(float sample_rate);
-
 	float sample();
 };
