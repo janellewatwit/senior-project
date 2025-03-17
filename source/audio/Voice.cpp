@@ -17,6 +17,11 @@ void Voice::setSampleRate(float sample_rate)
 		osc.setSampleRate(sample_rate);
 }
 
+void Voice::setOscillatorGain(uint8_t index, float gain)
+{
+	m_oscillators.at(index).setGain(gain);
+}
+
 float Voice::sample()
 {
 	float sample = 0.0f;

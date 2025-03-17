@@ -90,13 +90,18 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 						break;
 				}
 
-				// const Steinberg::Vst::ParamID paramID = paramQueue->getParameterId();
-				// if (paramID >= 1000 && paramID < 1064)
-				// {
-				// 	const int idx = paramID - 1000;
-				// 	if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
-				// 		m_voice.m_oscillators[idx].setGain(value);
-				// }
+				const Steinberg::Vst::ParamID paramID = paramQueue->getParameterId();
+				if (paramID >= 1000 && paramID < 1064)
+				{
+					if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
+					{
+						const int idx = paramID - 1001;
+						for(Voice& voice : m_voices)
+						{
+							voice.setOscillatorGain(idx, value);
+						}
+					}
+				}
 			}
 		}
 	}

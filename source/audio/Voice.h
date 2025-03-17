@@ -15,5 +15,6 @@ public:
 
 	void setFrequencyByMIDI(uint16_t midi);
 	void setSampleRate(float sample_rate);
+	void setOscillatorGain(uint8_t index, float gain);
 	float sample();
 };
