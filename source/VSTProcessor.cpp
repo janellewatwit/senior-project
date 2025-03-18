@@ -84,83 +84,29 @@ tresult PLUGIN_API VSTProcessor::process (Vst::ProcessData& data)
                 int32 numPoints = paramQueue->getPointCount ();
                 switch (paramQueue->getParameterId ())
                 {
+					// adjust master volume
 					case AudioEngine::VolumeParamID:
 						if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
-							m_master_volume = (float)value;
+							m_synth.setMasterVolume((float)value);
 						break;
 				}
 
+				// adjusting gain of oscillators
 				const Steinberg::Vst::ParamID paramID = paramQueue->getParameterId();
 				if (paramID >= 1000 && paramID < 1064)
 				{
 					if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
 					{
-						const int idx = paramID - 1001;
-						for(AudioEngine::Voice& voice : m_voices)
-						{
-							voice.setOscillatorGain(idx, value);
-						}
+						m_synth.setOscillatorGain(paramID - 1001, value);
 					}
 				}
 			}
 		}
-	}
-
-	if(data.inputEvents)
-	{
-		for(int i = 0; i < data.inputEvents->getEventCount(); i++)
-		{
-			Steinberg::Vst::Event e;
-			data.inputEvents->getEvent(i, e);
-			if(e.type == Steinberg::Vst::Event::kNoteOnEvent)
-			{
-				for(AudioEngine::Voice& v : m_voices)
-				{
-					if (v.m_noteId == -1)
-					{
-						v.setFrequencyByMIDI(e.noteOn.pitch);
-						v.m_noteId = e.noteOn.pitch;
-						v.m_gain = 1.0f;
-						break;
-					}
-				}
-			}
-			if(e.type == Steinberg::Vst::Event::kNoteOffEvent)
-			{
-				for(AudioEngine::Voice& v : m_voices)
-				{
-					if (v.m_noteId == e.noteOff.pitch)
-					{
-						v.m_noteId = -1;
-						v.m_gain = 0.0f;
-					}
-				}
-			}
-		}
-	}
+	}	
 
 	//--- Here you have to implement your processing
-	// iterate samples in buffer
-	for (int s = 0; s < data.numSamples; s++)
-	{
-		// sample oscillator
-		float sample = 0.0f;
-		for (AudioEngine::Voice& v : m_voices)
-		{
-			if(v.m_noteId != -1)
-				sample += v.sample();
-		}
-		sample *= m_master_volume;
-
-		// write sample to each channel of each output
-		for (int o = 0; o < data.numOutputs; o++)
-		{
-			for (int c = 0; c < data.outputs[o].numChannels; c++)
-			{
-				data.outputs[o].channelBuffers32[c][s] = sample;
-			}
-		}
-	}
+	m_synth.processMIDIEvents(data.inputEvents);
+	m_synth.generateAudio(data);
 
 #ifdef PROFILING
 	int active_voices = 0;
@@ -180,10 +126,7 @@ tresult PLUGIN_API VSTProcessor::process (Vst::ProcessData& data)
 tresult PLUGIN_API VSTProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	//--- called before any processing ----
-	for(AudioEngine::Voice& v : m_voices)
-	{
-		v.setSampleRate(newSetup.sampleRate);
-	}
+	m_synth.setSampleRate(newSetup.sampleRate);
 	return AudioEffect::setupProcessing (newSetup);
 }
 

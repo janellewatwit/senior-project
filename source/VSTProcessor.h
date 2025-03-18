@@ -5,12 +5,9 @@
 #pragma once
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
-#include "audio/Oscillator.h"
-#include "audio/SineWaveTable.h"
-#include "audio/Voice.h"
 #include "utils/Logger.h"
 #include "utils/Timer.h"
-#include <array>
+#include "audio/Synthesizer.h"
 
 namespace SoundsMagic {
 
@@ -56,8 +53,7 @@ public:
 
 //------------------------------------------------------------------------
 protected:
-	std::array<AudioEngine::Voice, AudioEngine::NUM_VOICES> m_voices;
-	Steinberg::Vst::ParamValue m_master_volume = 1.0;
+	AudioEngine::Synthesizer m_synth;
 
 #ifdef PROFILING
 	Util::Logger m_logger = Logger("path");
