@@ -105,6 +105,7 @@ tresult PLUGIN_API VSTProcessor::process (Vst::ProcessData& data)
 	}	
 
 	//--- Here you have to implement your processing
+	m_synth.processMIDIEvents(data.inputEvents);
 	m_synth.generateAudio(data);
 
 #ifdef PROFILING
