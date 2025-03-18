@@ -1,22 +1,20 @@
 //------------------------------------------------------------------------
-// Copyright(c) 2025 Senior Project.
+// Copyright(c) 2025 Sounds Magic.
 //------------------------------------------------------------------------
 
 #include "myplugincontroller.h"
 #include "myplugincids.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include "audio/constants.h"
-#include "ui/UIView.h"
-#include "utils/conv.h"
 
 using namespace Steinberg;
 
-namespace SeniorProject {
+namespace SoundsMagic {
 
 //------------------------------------------------------------------------
-// SeniorProjectController Implementation
+// VSTController Implementation
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectController::initialize (FUnknown* context)
+tresult PLUGIN_API VSTController::initialize (FUnknown* context)
 {
 	// Here the Plug-in will be instantiated
 
@@ -28,7 +26,7 @@ tresult PLUGIN_API SeniorProjectController::initialize (FUnknown* context)
 	}
 
 	// Here you could register some parameters
-	parameters.addParameter(STR16("Volume"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, VolumeParamID);
+	parameters.addParameter(STR16("Volume"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, AudioEngine::VolumeParamID);
 	parameters.addParameter(STR16("Osc_01 gain"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, 1001U);
 	parameters.addParameter(STR16("Osc_02 gain"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, 1002U);
 	parameters.addParameter(STR16("Osc_03 gain"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, 1003U);
@@ -98,7 +96,7 @@ tresult PLUGIN_API SeniorProjectController::initialize (FUnknown* context)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectController::terminate ()
+tresult PLUGIN_API VSTController::terminate ()
 {
 	// Here the Plug-in will be de-instantiated, last possibility to remove some memory!
 
@@ -107,7 +105,7 @@ tresult PLUGIN_API SeniorProjectController::terminate ()
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectController::setComponentState (IBStream* state)
+tresult PLUGIN_API VSTController::setComponentState (IBStream* state)
 {
 	// Here you get the state of the component (Processor part)
 	if (!state)
@@ -117,7 +115,7 @@ tresult PLUGIN_API SeniorProjectController::setComponentState (IBStream* state)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectController::setState (IBStream* state)
+tresult PLUGIN_API VSTController::setState (IBStream* state)
 {
 	// Here you get the state of the controller
 
@@ -125,7 +123,7 @@ tresult PLUGIN_API SeniorProjectController::setState (IBStream* state)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectController::getState (IBStream* state)
+tresult PLUGIN_API VSTController::getState (IBStream* state)
 {
 	// Here you are asked to deliver the state of the controller (if needed)
 	// Note: the real state of your plug-in is saved in the processor
@@ -134,7 +132,7 @@ tresult PLUGIN_API SeniorProjectController::getState (IBStream* state)
 }
 
 //------------------------------------------------------------------------
-IPlugView* PLUGIN_API SeniorProjectController::createView (FIDString name)
+IPlugView* PLUGIN_API VSTController::createView (FIDString name)
 {
 	// Here the Host wants to open your editor (if you have one)
 	if (FIDStringsEqual (name, Vst::ViewType::kEditor))
@@ -147,7 +145,7 @@ IPlugView* PLUGIN_API SeniorProjectController::createView (FIDString name)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectController::setParamNormalized (Vst::ParamID tag, Vst::ParamValue value)
+tresult PLUGIN_API VSTController::setParamNormalized (Vst::ParamID tag, Vst::ParamValue value)
 {
 	// called by host to update your parameters
 	tresult result = EditControllerEx1::setParamNormalized (tag, value);
@@ -155,7 +153,7 @@ tresult PLUGIN_API SeniorProjectController::setParamNormalized (Vst::ParamID tag
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectController::getParamStringByValue (Vst::ParamID tag, Vst::ParamValue valueNormalized, Vst::String128 string)
+tresult PLUGIN_API VSTController::getParamStringByValue (Vst::ParamID tag, Vst::ParamValue valueNormalized, Vst::String128 string)
 {
 	// called by host to get a string for given normalized value of a specific parameter
 	// (without having to set the value!)
@@ -163,7 +161,7 @@ tresult PLUGIN_API SeniorProjectController::getParamStringByValue (Vst::ParamID 
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectController::getParamValueByString (Vst::ParamID tag, Vst::TChar* string, Vst::ParamValue& valueNormalized)
+tresult PLUGIN_API VSTController::getParamValueByString (Vst::ParamID tag, Vst::TChar* string, Vst::ParamValue& valueNormalized)
 {
 	// called by host to get a normalized value from a string representation of a specific parameter
 	// (without having to set the value!)
@@ -171,4 +169,4 @@ tresult PLUGIN_API SeniorProjectController::getParamValueByString (Vst::ParamID 
 }
 
 //------------------------------------------------------------------------
-} // namespace SeniorProject
+} // namespace SoundsMagic

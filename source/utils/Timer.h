@@ -1,6 +1,8 @@
 #pragma once
 #include <chrono>
 
+namespace SoundsMagic::Util
+{
 class Timer
 {
 private:
@@ -11,6 +13,7 @@ private:
 public:
 	void start();
 	void end();
-	uint32_t duration_ns();
-	uint32_t duration_ms();
+	int64_t duration_ns();
+	int64_t duration_ms();
 };
+}

@@ -4,6 +4,8 @@
 #include "Oscillator.h"
 #include "constants.h"
 
+namespace SoundsMagic::AudioEngine
+{
 class Voice
 {
 private:
@@ -18,3 +20,4 @@ public:
 	void setOscillatorGain(uint8_t index, float gain);
 	float sample();
 };
+}

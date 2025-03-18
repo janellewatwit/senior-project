@@ -1,27 +1,27 @@
 //------------------------------------------------------------------------
-// Copyright(c) 2025 Senior Project.
+// Copyright(c) 2025 Sounds Magic.
 //------------------------------------------------------------------------
 
 #pragma once
 
 #include "public.sdk/source/vst/vsteditcontroller.h"
 
-namespace SeniorProject {
+namespace SoundsMagic {
 
 //------------------------------------------------------------------------
-//  SeniorProjectController
+//  VSTController
 //------------------------------------------------------------------------
-class SeniorProjectController : public Steinberg::Vst::EditControllerEx1
+class VSTController : public Steinberg::Vst::EditControllerEx1
 {
 public:
 //------------------------------------------------------------------------
-	SeniorProjectController () = default;
-	~SeniorProjectController () SMTG_OVERRIDE = default;
+	VSTController () = default;
+	~VSTController () SMTG_OVERRIDE = default;
 
     // Create function
 	static Steinberg::FUnknown* createInstance (void* /*context*/)
 	{
-		return (Steinberg::Vst::IEditController*)new SeniorProjectController;
+		return (Steinberg::Vst::IEditController*)new VSTController;
 	}
 
 	// IPluginBase
@@ -54,4 +54,4 @@ protected:
 };
 
 //------------------------------------------------------------------------
-} // namespace SeniorProject
+} // namespace SoundsMagic

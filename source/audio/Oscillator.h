@@ -3,6 +3,8 @@
 #include <cmath>
 #include "SineWaveTable.h"
 
+namespace SoundsMagic::AudioEngine
+{
 class Oscillator
 {
 private:
@@ -31,3 +33,4 @@ public:
 	float sample();
 	void resetPhase();
 };
+}

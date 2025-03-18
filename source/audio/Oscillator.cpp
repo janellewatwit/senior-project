@@ -1,5 +1,7 @@
 #include "Oscillator.h"
 
+namespace SoundsMagic::AudioEngine
+{
 Oscillator::Oscillator()
 {
 	updatePhaseDelta();
@@ -40,4 +42,5 @@ float Oscillator::sample()
 void Oscillator::resetPhase()
 {
 	m_phase_accumulator = 0U;
+}
 }

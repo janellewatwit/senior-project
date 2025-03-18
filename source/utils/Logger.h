@@ -1,6 +1,8 @@
 #pragma once
 #include <fstream>
 
+namespace SoundsMagic::Util
+{
 class Logger
 {
 private:
@@ -11,3 +13,4 @@ public:
 	~Logger();
 	std::ofstream& stream();
 };
+}

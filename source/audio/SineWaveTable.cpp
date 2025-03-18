@@ -2,6 +2,8 @@
 #include "SineWaveTable.h"
 #include "constants.h"
 
+namespace SoundsMagic::AudioEngine
+{
 float* SineWaveTable::m_table = nullptr;
 
 SineWaveTable::SineWaveTable() : m_len(1U << WAVETABLE_LOOKUP_BITS)
@@ -20,4 +22,5 @@ const float SineWaveTable::sample(uint32_t index)
 	index = index >> (sizeof(uint32_t) * 8U - WAVETABLE_LOOKUP_BITS);
 	index &= (1U << WAVETABLE_LOOKUP_BITS) - 1U;
 	return m_table[index];
+}
 }

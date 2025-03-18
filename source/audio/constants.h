@@ -2,6 +2,8 @@
 #include <cstdint>
 #include "public.sdk/source/vst/vstparameters.h"
 
+namespace SoundsMagic::AudioEngine
+{
 // DSP
 constexpr double PI = 3.141592653589793;
 
@@ -12,3 +14,4 @@ constexpr uint8_t WAVETABLE_LOOKUP_BITS = 16U;
 
 // PARAMS
 constexpr Steinberg::Vst::ParamID VolumeParamID = 100U;
+}

@@ -1,6 +1,8 @@
 #include "Voice.h"
 #include "constants.h"
 
+namespace SoundsMagic::AudioEngine
+{
 void Voice::setFrequencyByMIDI(uint16_t midi)
 {
 	float baseFrequency = 440.0f * (float)pow(2.0, (midi - 69.0) / 12.0);
@@ -30,4 +32,5 @@ float Voice::sample()
 		sample += osc.sample() / m_oscillators.size();
 	}
 	return sample * m_gain;
+}
 }

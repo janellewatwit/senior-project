@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------
-// Copyright(c) 2025 Senior Project.
+// Copyright(c) 2025 Sounds Magic.
 //------------------------------------------------------------------------
 
 #pragma once
@@ -12,21 +12,21 @@
 #include "utils/Timer.h"
 #include <array>
 
-namespace SeniorProject {
+namespace SoundsMagic {
 
 //------------------------------------------------------------------------
-//  SeniorProjectProcessor
+//  VSTProcessor
 //------------------------------------------------------------------------
-class SeniorProjectProcessor : public Steinberg::Vst::AudioEffect
+class VSTProcessor : public Steinberg::Vst::AudioEffect
 {
 public:
-	SeniorProjectProcessor ();
-	~SeniorProjectProcessor () SMTG_OVERRIDE;
+	VSTProcessor ();
+	~VSTProcessor () SMTG_OVERRIDE;
 
     // Create function
 	static Steinberg::FUnknown* createInstance (void* /*context*/) 
 	{ 
-		return (Steinberg::Vst::IAudioProcessor*)new SeniorProjectProcessor; 
+		return (Steinberg::Vst::IAudioProcessor*)new VSTProcessor; 
 	}
 
 	//--- ---------------------------------------------------------------------
@@ -56,14 +56,14 @@ public:
 
 //------------------------------------------------------------------------
 protected:
-	std::array<Voice, NUM_VOICES> m_voices;
+	std::array<AudioEngine::Voice, AudioEngine::NUM_VOICES> m_voices;
 	Steinberg::Vst::ParamValue m_master_volume = 1.0;
 
 #ifdef PROFILING
-	Logger m_logger = Logger("path");
-	Timer m_timer;
+	Util::Logger m_logger = Logger("path");
+	Util::Timer m_timer;
 #endif
 };
 
 //------------------------------------------------------------------------
-} // namespace SeniorProject
+} // namespace SoundsMagic

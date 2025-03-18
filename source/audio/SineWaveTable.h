@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <cmath>
 
+namespace SoundsMagic::AudioEngine
+{
 class SineWaveTable
 {
 public:
@@ -13,3 +15,4 @@ public:
 	SineWaveTable();
 	const float sample(uint32_t index);
 };
+}

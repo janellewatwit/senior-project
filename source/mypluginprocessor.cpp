@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------
-// Copyright(c) 2025 Senior Project.
+// Copyright(c) 2025 Sounds Magic.
 //------------------------------------------------------------------------
 
 #include "mypluginprocessor.h"
@@ -13,22 +13,22 @@
 
 using namespace Steinberg;
 
-namespace SeniorProject {
+namespace SoundsMagic {
 //------------------------------------------------------------------------
-// SeniorProjectProcessor
+// VSTProcessor
 //------------------------------------------------------------------------
-SeniorProjectProcessor::SeniorProjectProcessor ()
+VSTProcessor::VSTProcessor ()
 {
 	//--- set the wanted controller for our processor
-	setControllerClass (kSeniorProjectControllerUID);
+	setControllerClass (kSoundsMagicControllerUID);
 }
 
 //------------------------------------------------------------------------
-SeniorProjectProcessor::~SeniorProjectProcessor ()
+VSTProcessor::~VSTProcessor ()
 {}
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
+tresult PLUGIN_API VSTProcessor::initialize (FUnknown* context)
 {
 	// Here the Plug-in will be instantiated
 	
@@ -49,7 +49,7 @@ tresult PLUGIN_API SeniorProjectProcessor::initialize (FUnknown* context)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectProcessor::terminate ()
+tresult PLUGIN_API VSTProcessor::terminate ()
 {
 	// Here the Plug-in will be de-instantiated, last possibility to remove some memory!
 
@@ -58,14 +58,14 @@ tresult PLUGIN_API SeniorProjectProcessor::terminate ()
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectProcessor::setActive (TBool state)
+tresult PLUGIN_API VSTProcessor::setActive (TBool state)
 {
 	//--- called when the Plug-in is enable/disable (On/Off) -----
 	return AudioEffect::setActive (state);
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
+tresult PLUGIN_API VSTProcessor::process (Vst::ProcessData& data)
 {
 #ifdef PROFILING
 	m_timer.start();
@@ -84,7 +84,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
                 int32 numPoints = paramQueue->getPointCount ();
                 switch (paramQueue->getParameterId ())
                 {
-					case VolumeParamID:
+					case AudioEngine::VolumeParamID:
 						if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
 							m_master_volume = (float)value;
 						break;
@@ -96,7 +96,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 					if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
 					{
 						const int idx = paramID - 1001;
-						for(Voice& voice : m_voices)
+						for(AudioEngine::Voice& voice : m_voices)
 						{
 							voice.setOscillatorGain(idx, value);
 						}
@@ -114,7 +114,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 			data.inputEvents->getEvent(i, e);
 			if(e.type == Steinberg::Vst::Event::kNoteOnEvent)
 			{
-				for(Voice& v : m_voices)
+				for(AudioEngine::Voice& v : m_voices)
 				{
 					if (v.m_noteId == -1)
 					{
@@ -127,7 +127,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 			}
 			if(e.type == Steinberg::Vst::Event::kNoteOffEvent)
 			{
-				for(Voice& v : m_voices)
+				for(AudioEngine::Voice& v : m_voices)
 				{
 					if (v.m_noteId == e.noteOff.pitch)
 					{
@@ -145,7 +145,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 	{
 		// sample oscillator
 		float sample = 0.0f;
-		for (Voice& v : m_voices)
+		for (AudioEngine::Voice& v : m_voices)
 		{
 			if(v.m_noteId != -1)
 				sample += v.sample();
@@ -164,7 +164,7 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 
 #ifdef PROFILING
 	int active_voices = 0;
-	for (Voice& v : m_voices)
+	for (AudioEngine::Voice& v : m_voices)
 		if (v.m_noteId != -1) active_voices++;
 	m_timer.end();
 	m_logger.stream() << active_voices;
@@ -177,10 +177,10 @@ tresult PLUGIN_API SeniorProjectProcessor::process (Vst::ProcessData& data)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
+tresult PLUGIN_API VSTProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	//--- called before any processing ----
-	for(Voice& v : m_voices)
+	for(AudioEngine::Voice& v : m_voices)
 	{
 		v.setSampleRate(newSetup.sampleRate);
 	}
@@ -188,7 +188,7 @@ tresult PLUGIN_API SeniorProjectProcessor::setupProcessing (Vst::ProcessSetup& n
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectProcessor::canProcessSampleSize (int32 symbolicSampleSize)
+tresult PLUGIN_API VSTProcessor::canProcessSampleSize (int32 symbolicSampleSize)
 {
 	// by default kSample32 is supported
 	if (symbolicSampleSize == Vst::kSample32)
@@ -202,7 +202,7 @@ tresult PLUGIN_API SeniorProjectProcessor::canProcessSampleSize (int32 symbolicS
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectProcessor::setState (IBStream* state)
+tresult PLUGIN_API VSTProcessor::setState (IBStream* state)
 {
 	// called when we load a preset, the model has to be reloaded
 	IBStreamer streamer (state, kLittleEndian);
@@ -211,7 +211,7 @@ tresult PLUGIN_API SeniorProjectProcessor::setState (IBStream* state)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API SeniorProjectProcessor::getState (IBStream* state)
+tresult PLUGIN_API VSTProcessor::getState (IBStream* state)
 {
 	// here we need to save the model
 	IBStreamer streamer (state, kLittleEndian);
@@ -220,4 +220,4 @@ tresult PLUGIN_API SeniorProjectProcessor::getState (IBStream* state)
 }
 
 //------------------------------------------------------------------------
-} // namespace SeniorProject
+} // namespace SoundsMagic
