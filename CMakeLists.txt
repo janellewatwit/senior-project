@@ -20,13 +20,13 @@ add_subdirectory(${vst3sdk_SOURCE_DIR} ${PROJECT_BINARY_DIR}/vst3sdk)
 smtg_enable_vst3_sdk()
 
 smtg_add_vst3plugin(SoundsMagic
+	source/main.cpp
     source/version.h
-    source/myplugincids.h
-    source/mypluginprocessor.h
-    source/mypluginprocessor.cpp
-    source/myplugincontroller.h
-    source/myplugincontroller.cpp
-    source/mypluginentry.cpp
+    source/cids.h
+    source/VSTProcessor.h
+    source/VSTProcessor.cpp
+    source/VSTController.h
+    source/VSTController.cpp
 	source/audio/constants.h
 	source/audio/Oscillator.h
 	source/audio/Oscillator.cpp

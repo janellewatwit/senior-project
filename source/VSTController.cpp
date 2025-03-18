@@ -2,8 +2,8 @@
 // Copyright(c) 2025 Sounds Magic.
 //------------------------------------------------------------------------
 
-#include "myplugincontroller.h"
-#include "myplugincids.h"
+#include "VSTController.h"
+#include "cids.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include "audio/constants.h"
 

@@ -2,9 +2,9 @@
 // Copyright(c) 2025 Sounds Magic.
 //------------------------------------------------------------------------
 
-#include "mypluginprocessor.h"
-#include "myplugincontroller.h"
-#include "myplugincids.h"
+#include "VSTProcessor.h"
+#include "VSTController.h"
+#include "cids.h"
 #include "version.h"
 
 #include "public.sdk/source/main/pluginfactory.h"

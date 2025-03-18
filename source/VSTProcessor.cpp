@@ -2,8 +2,8 @@
 // Copyright(c) 2025 Sounds Magic.
 //------------------------------------------------------------------------
 
-#include "mypluginprocessor.h"
-#include "myplugincids.h"
+#include "VSTProcessor.h"
+#include "cids.h"
 
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
