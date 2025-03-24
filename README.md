@@ -1,4 +1,4 @@
-# Senior Project
+# Sounds Magic
 A virtual synthesizer (VST3) plugin with unique audio visualizations.
 
 ## Clone
@@ -11,7 +11,7 @@ git clone --recursive git@github.com:janellewatwit/senior-project.git
 ## Build
 Install [CMake](https://cmake.org/download/) and [Visual Studio 2022](https://visualstudio.microsoft.com/vs/).
 
-Generate project files for Visual Studio 2022. The resulting solution will be at `build/SeniorProject.sln`.
+Generate project files for Visual Studio 2022. The resulting solution will be at `build/SoundsMagic.sln`.
 ```cmd
 ./scripts/generate.ps1
 ```

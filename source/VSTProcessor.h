@@ -1,26 +1,29 @@
 //------------------------------------------------------------------------
-// Copyright(c) 2025 Senior Project.
+// Copyright(c) 2025 Sounds Magic.
 //------------------------------------------------------------------------
 
 #pragma once
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
+#include "utils/Logger.h"
+#include "utils/Timer.h"
+#include "audio/Synthesizer.h"
 
-namespace SeniorProject {
+namespace SoundsMagic {
 
 //------------------------------------------------------------------------
-//  SeniorProjectProcessor
+//  VSTProcessor
 //------------------------------------------------------------------------
-class SeniorProjectProcessor : public Steinberg::Vst::AudioEffect
+class VSTProcessor : public Steinberg::Vst::AudioEffect
 {
 public:
-	SeniorProjectProcessor ();
-	~SeniorProjectProcessor () SMTG_OVERRIDE;
+	VSTProcessor ();
+	~VSTProcessor () SMTG_OVERRIDE;
 
     // Create function
 	static Steinberg::FUnknown* createInstance (void* /*context*/) 
 	{ 
-		return (Steinberg::Vst::IAudioProcessor*)new SeniorProjectProcessor; 
+		return (Steinberg::Vst::IAudioProcessor*)new VSTProcessor; 
 	}
 
 	//--- ---------------------------------------------------------------------
@@ -50,8 +53,13 @@ public:
 
 //------------------------------------------------------------------------
 protected:
+	AudioEngine::Synthesizer m_synth;
 
+#ifdef PROFILING
+	Util::Logger m_logger = Logger("path");
+	Util::Timer m_timer;
+#endif
 };
 
 //------------------------------------------------------------------------
-} // namespace SeniorProject
+} // namespace SoundsMagic
