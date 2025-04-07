@@ -125,11 +125,8 @@ tresult PLUGIN_API VSTProcessor::process (Vst::ProcessData& data)
 	m_synth.generateAudio(data);
 
 #ifdef PROFILING
-	int active_voices = 0;
-	for (AudioEngine::Voice& v : m_voices)
-		if (v.m_noteId != -1) active_voices++;
 	m_timer.end();
-	m_logger.stream() << active_voices;
+	m_logger.stream() << m_synth.countActiveVoices();
 	m_logger.stream() << ":";
 	m_logger.stream() << m_timer.duration_ns();
 	m_logger.stream() << "\n";

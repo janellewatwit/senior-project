@@ -80,7 +80,16 @@ namespace SoundsMagic::AudioEngine
 			}
 		}
 	}
-	
+
+	uint16_t Synthesizer::countActiveVoices()
+	{
+		uint16_t count = 0U;
+		for (Voice& v : m_voices)
+			if (v.envelope.getState() != OFF)
+				count++;
+		return count;
+	}
+
 	void Synthesizer::setAttack(float attack)
 	{
 		for (Voice& v : m_voices)

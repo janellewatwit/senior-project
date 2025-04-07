@@ -56,7 +56,7 @@ protected:
 	AudioEngine::Synthesizer m_synth;
 
 #ifdef PROFILING
-	Util::Logger m_logger = Logger("path");
+	Util::Logger m_logger = Util::Logger("path");
 	Util::Timer m_timer;
 #endif
 };
