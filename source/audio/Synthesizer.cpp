@@ -37,9 +37,7 @@ namespace SoundsMagic::AudioEngine
 					{
 						if (v.m_noteId == -1)
 						{
-							v.setFrequencyByMIDI(e.noteOn.pitch);
-							v.m_noteId = e.noteOn.pitch;
-							v.m_gain = 1.0f;
+							v.playPitch(e.noteOn.pitch);
 							break;
 						}
 					}
@@ -50,8 +48,7 @@ namespace SoundsMagic::AudioEngine
 					{
 						if (v.m_noteId == e.noteOff.pitch)
 						{
-							v.m_noteId = -1;
-							v.m_gain = 0.0f;
+							v.releaseNote();
 						}
 					}
 				}
@@ -68,7 +65,7 @@ namespace SoundsMagic::AudioEngine
 			float sample = 0.0f;
 			for (AudioEngine::Voice& v : m_voices)
 			{
-				if(v.m_noteId != -1)
+				if(v.envelope.getState() != OFF)
 					sample += v.sample();
 			}
 			sample *= m_master_volume;
@@ -82,5 +79,29 @@ namespace SoundsMagic::AudioEngine
 				}
 			}
 		}
+	}
+	
+	void Synthesizer::setAttack(float attack)
+	{
+		for (Voice& v : m_voices)
+			v.envelope.setAttackTime(attack);
+	}
+	
+	void Synthesizer::setDecay(float decay)
+	{
+		for (Voice& v : m_voices)
+			v.envelope.setDecayTime(decay);
+	}
+	
+	void Synthesizer::setSustain(float sustain)
+	{
+		for (Voice& v : m_voices)
+			v.envelope.setSustainLevel(sustain);
+	}
+	
+	void Synthesizer::setRelease(float release)
+	{
+		for (Voice& v : m_voices)
+			v.envelope.setReleaseTime(release);
 	}
 }

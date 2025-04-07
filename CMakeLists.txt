@@ -28,6 +28,8 @@ smtg_add_vst3plugin(SoundsMagic
     source/VSTController.h
     source/VSTController.cpp
 	source/audio/constants.h
+	source/audio/ADSR.h
+	source/audio/ADSR.cpp
 	source/audio/Oscillator.h
 	source/audio/Oscillator.cpp
 	source/audio/SineWaveTable.h

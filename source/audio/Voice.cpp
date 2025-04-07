@@ -3,18 +3,27 @@
 
 namespace SoundsMagic::AudioEngine
 {
-void Voice::setFrequencyByMIDI(uint16_t midi)
+void Voice::playPitch(float pitch)
 {
-	float baseFrequency = 440.0f * (float)pow(2.0, (midi - 69.0) / 12.0);
+	float baseFrequency = 440.0f * (float)pow(2.0, (pitch - 69.0) / 12.0);
 	for (int i = 0; i < m_oscillators.size(); i++)
 	{
 		m_oscillators[i].setFrequency(baseFrequency * (i+1));
 		m_oscillators[i].resetPhase();
 	}
+	m_noteId = pitch;
+	envelope.noteOn();
+}
+
+void Voice::releaseNote()
+{
+	m_noteId = -1;
+	envelope.noteOff();
 }
 
 void Voice::setSampleRate(float sample_rate)
 {
+	envelope.setSampleRate(sample_rate);
 	for (Oscillator& osc : m_oscillators)
 		osc.setSampleRate(sample_rate);
 }
@@ -31,6 +40,6 @@ float Voice::sample()
 	{
 		sample += osc.sample() / m_oscillators.size();
 	}
-	return sample * m_gain;
+	return sample * envelope.sample();
 }
 }

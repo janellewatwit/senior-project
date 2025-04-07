@@ -89,6 +89,22 @@ tresult PLUGIN_API VSTProcessor::process (Vst::ProcessData& data)
 						if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
 							m_synth.setMasterVolume((float)value);
 						break;
+					case AudioEngine::AttackParamID:
+						if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
+							m_synth.setAttack(value);
+						break;
+					case AudioEngine::DecayParamID:
+						if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
+							m_synth.setDecay(value);
+						break;
+					case AudioEngine::SustainParamID:
+						if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
+							m_synth.setSustain(value);
+						break;
+					case AudioEngine::ReleaseParamID:
+						if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue)
+							m_synth.setRelease(value);
+						break;
 				}
 
 				// adjusting gain of oscillators

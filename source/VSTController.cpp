@@ -27,6 +27,10 @@ tresult PLUGIN_API VSTController::initialize (FUnknown* context)
 
 	// Here you could register some parameters
 	parameters.addParameter(STR16("Volume"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, AudioEngine::VolumeParamID);
+	parameters.addParameter(STR16("Attack"), STR16("ms"), 0, 0, Steinberg::Vst::ParameterInfo::kCanAutomate, AudioEngine::AttackParamID);
+	parameters.addParameter(STR16("Decay"), STR16("ms"), 0, 0, Steinberg::Vst::ParameterInfo::kCanAutomate, AudioEngine::DecayParamID);
+	parameters.addParameter(STR16("Sustain"), STR16("ms"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, AudioEngine::SustainParamID);
+	parameters.addParameter(STR16("Release"), STR16("ms"), 0, 0, Steinberg::Vst::ParameterInfo::kCanAutomate, AudioEngine::ReleaseParamID);
 	parameters.addParameter(STR16("Osc_01 gain"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, 1001U);
 	parameters.addParameter(STR16("Osc_02 gain"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, 1002U);
 	parameters.addParameter(STR16("Osc_03 gain"), STR16("%"), 0, 1, Steinberg::Vst::ParameterInfo::kCanAutomate, 1003U);

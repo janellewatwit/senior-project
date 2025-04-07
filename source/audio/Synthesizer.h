@@ -20,5 +20,9 @@ public:
 	void setOscillatorGain(uint8_t index, float gain);
 	void processMIDIEvents(Steinberg::Vst::IEventList* inputEvents);
 	void generateAudio(Steinberg::Vst::ProcessData& data);
+	void setAttack(float attack);
+	void setDecay(float decay);
+	void setSustain(float sustain);
+	void setRelease(float release);
 };
 }
