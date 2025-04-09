@@ -25,5 +25,9 @@ public:
 	void setDecay(float decay);
 	void setSustain(float sustain);
 	void setRelease(float release);
+
+
+	//Shared mem buffer
+	std::vector<float> memBuff;
 };
 }

@@ -76,6 +76,9 @@ namespace SoundsMagic::AudioEngine
 				for (int c = 0; c < data.outputs[o].numChannels; c++)
 				{
 					data.outputs[o].channelBuffers32[c][s] = sample;
+
+					//I had a different approach, but this is more efficient
+					if(memBuff.size() < 1024) memBuff.push_back(sample);
 				}
 			}
 		}

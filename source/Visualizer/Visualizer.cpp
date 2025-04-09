@@ -14,7 +14,7 @@
     Visualizer::Visualizer(int bins, int width, int height, int sampleRate, int fftSize, int style)
     : numBins(bins), screenWidth(width), screenHeight(height), sampleRate(sampleRate), fftSize(fftSize), style(style)
     { 
-
+        using Complex = std::complex<float>;
         this->screenHeight = static_cast<float>(height);
         DEBUG_PRINT("height " << screenHeight);
         BAR_HEIGHT_MAX = screenHeight * 0.9f; //Make it reach till the top 10%
@@ -23,37 +23,25 @@
         // Calculate bin width in Hz (useful for mapping frequencies)
         binWidth = static_cast<float>(sampleRate) / fftSize;
 
-        
         rainbow = false;
         computeSize = fftSize/4; //TODO find proper scaling for this
 
         /*
-            Color Setup
+            Color Setup -- should direct elsewhere in future due to expandability
         */
         switch (style) {
             case 1:
                 // purple
-                styleArr[0] = 155;
-                styleArr[1] = 30;
-                styleArr[2] = 200;
-                styleArr[3] = 255; 
+                styleArr[0] = 155; styleArr[1] = 30; styleArr[2] = 200; styleArr[3] = 255;      
                 break;
             case 2:
                 // rainbow here
-                styleArr[0] = 0;
-                styleArr[1] = 0;
-                styleArr[2] = 0;
-                styleArr[3] = 0; 
-
+                styleArr[0] = 0; styleArr[1] = 0; styleArr[2] = 0; styleArr[3] = 0;
                 rainbow = true;
                 break;
             default:
                 // default to white
-                styleArr[0] = 255;
-                styleArr[1] = 255;
-                styleArr[2] = 255;
-                styleArr[3] = 255; 
-
+                styleArr[0] = 255; styleArr[1] = 255; styleArr[2] = 255; styleArr[3] = 255;
                 break;
         }
         
@@ -107,6 +95,9 @@
 
     }
 
+    /*
+        Create bins responsible for holding audio (based on frequency) and representing audio
+    */
     void Visualizer::generateLogBins()
     {
         float fMin = 20.0f;  // Minimum frequency we care about
@@ -262,29 +253,25 @@
         This will run the specified visualizer, so if you create a visualizer and want to demonstrate it, this is how you can do it.
     */
    void Visualizer::runVisualizer() {
-        DEBUG_PRINT("Creating Scene");
-        //Creates Scene (simplifys work) AND is on thread!
+        DEBUG_PRINT("Creating Scene / Entering Main Runner");
+        //Creates Scene (simplifies work) AND is on thread!
         if (!createScene()) {
             throw std::runtime_error("Failed to Create Scene (Missing or Invalid Data).");
         } 
-
-
-        DEBUG_PRINT("Entering Main Runner");
-        using Complex = std::complex<float>;
 
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
 
         bool isInitialized = false;
-        int current = 0;
-        int increment = computeSize;
+        size_t current = 0;
 
-        SharedMemoryReader reader(1500*sizeof(float)); // Instantiate the reader
-        auto lastTime = reader.getLastUpdateTimestamp();
+        SharedMemoryReader reader(1024); // Instantiate the reader
+        auto lastTime = reader.getLastUpdateTimestampMs();
 
         SDL_Delay(1000);
+
         while (running.load()) {
-            // Process SDL events
+            // Process Exit event
             SDL_Event event;
             while (SDL_PollEvent(&event)) {
                 if (event.type == SDL_EVENT_QUIT) {
@@ -294,7 +281,7 @@
             }
 
             // Check for new shared memory data
-            auto currentTime = reader.getLastUpdateTimestamp();
+            auto currentTime = reader.getLastUpdateTimestampMs();
 
             if (currentTime > lastTime) {
                 lastTime = currentTime;
@@ -303,36 +290,35 @@
                 // Print some values from newData to check
                 std::cout << "newData size: " << newData.size() << std::endl;
                 std::cout << "First 10 values of newData:" << std::endl;
-                for (int i = 0; i < 10 && i < newData.size(); i++) {
+                for (std::vector<float>::size_type i = 0; i < 10 && i < newData.size(); i++) {
                     std::cout << "newData[" << i << "] = " << newData[i] << std::endl;
                 }
-                this->updateData(newData);                      // Feed into visualizer
-            }
 
-            {   // Prevent race conditions with mutex lock
-                std::lock_guard<std::mutex> lock(dataMutex);
+                // Feed data into visualizer
+                this->updateData(newData);
 
+                // Initialize or update FFT processing
                 if (!isInitialized || audioSamplesChanged) {
-                    current = 0;
-                    FFT::setup(audioSamples);
+                    FFT::setup(newData);  // Re-initialize FFT with fresh data
                     DEBUG_PRINT("FFT Setup Reinitialized");
                     isInitialized = true;
                     audioSamplesChanged = false;
-                } else {
-                    current += increment / 2;
                 }
 
-                DEBUG_PRINT("FFT Compute\n");
-                std::vector<Complex> fftData = FFT::compute(current, increment);
+                // Automatic handling of current
+                std::vector<Complex> fftData = FFT::compute(current, newData.size());
                 DEBUG_PRINT("Updating frequencies\n");
-                this->update(fftData);
+                this->update(fftData);  // Update frequencies based on FFT results
+
+                // Rendering
                 DEBUG_PRINT("Rendering Bars\n");
                 this->render(renderer);
             }
 
-            SDL_Delay(16); // ~60 FPS
+            SDL_Delay(100); // ~60 FPS
         }
     }
+
 
 
     //Intialize Thread and begin running program.
@@ -358,7 +344,6 @@
 
     // We need an easier interface to actually update the audio
     void Visualizer::updateData(const std::vector<float>& newData) {
-        std::lock_guard<std::mutex> lock(dataMutex);
         audioSamples = newData;
         audioSamplesChanged = true;
     }

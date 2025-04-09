@@ -9,6 +9,8 @@
 #include "utils/Timer.h"
 #include "audio/Synthesizer.h"
 
+#include "SharedMemoryWriter.h"
+
 namespace SoundsMagic {
 
 //------------------------------------------------------------------------
@@ -50,6 +52,12 @@ public:
 	/** For persistence */
 	Steinberg::tresult PLUGIN_API setState (Steinberg::IBStream* state) SMTG_OVERRIDE;
 	Steinberg::tresult PLUGIN_API getState (Steinberg::IBStream* state) SMTG_OVERRIDE;
+
+
+	/** Shared Memory Mumbo jump */
+	SharedMemoryWriter VSTWriter;
+	void VSTProcessor::writeAudioDataToSharedMemory(size_t numSamples);
+
 
 //------------------------------------------------------------------------
 protected:

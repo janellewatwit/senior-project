@@ -17,7 +17,7 @@ namespace SoundsMagic {
 //------------------------------------------------------------------------
 // VSTProcessor
 //------------------------------------------------------------------------
-VSTProcessor::VSTProcessor ()
+VSTProcessor::VSTProcessor () : VSTWriter("VSTWriter", 1024) //Initialize Shared Mem Writer
 {
 	//--- set the wanted controller for our processor
 	setControllerClass (kSoundsMagicControllerUID);
@@ -118,11 +118,16 @@ tresult PLUGIN_API VSTProcessor::process (Vst::ProcessData& data)
 				}
 			}
 		}
+
 	}	
 
 	//--- Here you have to implement your processing
 	m_synth.processMIDIEvents(data.inputEvents);
 	m_synth.generateAudio(data);
+	
+	//I should be able to extract from the data here
+	int numSamples = 1024; // TODO -- make dynamic
+	writeAudioDataToSharedMemory(numSamples);
 
 #ifdef PROFILING
 	m_timer.end();
@@ -134,6 +139,23 @@ tresult PLUGIN_API VSTProcessor::process (Vst::ProcessData& data)
 
 	return kResultOk;
 }
+
+// We can move this later, but I have to work on this now.
+void VSTProcessor::writeAudioDataToSharedMemory(size_t numSamples)
+{
+    // Ensure the buffer has data
+    if (m_synth.memBuff.empty()) {
+        return;
+    }
+	else{
+		// Write the pointer to the data, not the vector itself
+		VSTWriter.write(m_synth.memBuff.data(), numSamples);
+		m_synth.memBuff.clear();
+	}
+
+    
+}
+
 
 //------------------------------------------------------------------------
 tresult PLUGIN_API VSTProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
@@ -174,6 +196,7 @@ tresult PLUGIN_API VSTProcessor::getState (IBStream* state)
 
 	return kResultOk;
 }
+
 
 //------------------------------------------------------------------------
 } // namespace SoundsMagic

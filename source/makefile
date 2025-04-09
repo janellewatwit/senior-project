@@ -12,8 +12,8 @@ TARGETS = Writer.exe Reader.exe
 all: $(TARGETS)
 
 # Rule to build Writer.exe
-Writer.exe: Writer.cpp SharedMemoryData.h 
-	$(CXX) $(CXXFLAGS) -o Writer.exe Writer.cpp SharedMemoryData.h 
+#Writer.exe: Writer.cpp SharedMemoryData.h 
+#	$(CXX) $(CXXFLAGS) -o Writer.exe Writer.cpp SharedMemoryData.h 
 
 # Rule to build Reader.exe with additional include and lib directories
 Reader.exe:

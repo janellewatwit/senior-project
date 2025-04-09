@@ -27,7 +27,7 @@
         }
 
         // Ensure the 'start' and 'inc' values are valid
-        if (start < 0 || start >= audioData.size() || inc <= 0) {
+        if (start < 0 || static_cast<size_t>(start) >= audioData.size() || inc <= 0) {
             DEBUG_PRINT("Invalid start or increment value");
             return {};
         }

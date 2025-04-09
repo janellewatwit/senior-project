@@ -1,9 +1,12 @@
-#include <chrono>
-#include <cstring>
+// SharedMemoryData.h
+#pragma once
+#include <cstdint>
 
-const int MAX_DATA_SIZE = 1024;
+const size_t MAX_AUDIO_SAMPLES = 1024;
 
 struct SharedMemoryData {
-    float audioData[MAX_DATA_SIZE]; // Array to hold audio data
-    std::chrono::system_clock::time_point lastUpdateTimestamp; // Timestamp for last update
+    uint32_t versionStart; // Used for consistency check
+    uint64_t lastUpdateTimestampMs; // UNIX time in ms
+    float audioData[MAX_AUDIO_SAMPLES]; // Interleaved or mono, up to you
+    uint32_t versionEnd; // Must match versionStart
 };

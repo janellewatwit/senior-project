@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <iostream>
 #include <chrono>
+#include <algorithm>
 
 //threading stuff
 #include <thread>
 #include <atomic> // how to stop thread
-#include <mutex> //prevents race condition
 
 
 //building no work I try this: 
@@ -53,7 +53,6 @@ public:
 
     //Communication with VST
     bool audioSamplesChanged = false;
-    std::mutex dataMutex;
     std::atomic<bool> running{false};
 
     //Shared buffer listener

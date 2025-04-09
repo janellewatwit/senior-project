@@ -8,7 +8,7 @@ raw audio data into frequencies which are used for representation
 	Main is original test with song
 
 ## IN DEVELOPMENT
-
+	Debugging assisted by Open AI - GPT 4.0
 
 
 ## TO BE EDITED 
