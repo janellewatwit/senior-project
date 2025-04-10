@@ -42,6 +42,10 @@ smtg_add_vst3plugin(SoundsMagic
 	source/utils/Logger.cpp
 	source/utils/Timer.h
 	source/utils/Timer.cpp
+
+    source/SharedMemoryWriter.h
+    source/SharedMemoryWriter.cpp
+    source/SharedMemoryData.h
 )
 
 #- VSTGUI Wanted ----
