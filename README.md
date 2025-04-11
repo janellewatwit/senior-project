@@ -8,6 +8,15 @@ Do not modify files in the `vendor/` directory as they belong to other repositor
 git clone --recursive git@github.com:janellewatwit/senior-project.git
 ```
 
+**Note**
+    A recent update changed the clone method, instead try this:
+```cmd
+    git clone --recursive https://github.com/janellewatwit/senior-project.git
+```
+
+Code is still messy but it works. Additionally, in order to run the visualizer, you must open the 'shmemtext.exe'.
+
+
 ## Build
 Install [CMake](https://cmake.org/download/) and [Visual Studio 2022](https://visualstudio.microsoft.com/vs/).
 

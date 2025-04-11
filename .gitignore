@@ -1,3 +1,6 @@
 build
 .gitconfig
 .vscode
+
+
+source/*.exe
