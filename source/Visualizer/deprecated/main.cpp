@@ -89,6 +89,7 @@ int main() {
     bool exit = false;
     SDL_Event event;
 
+    //had gpt edit this bad boy, assume emojis are gpts doing.
     printf("Attempting to run program loop\n");
     while (!exit) {
     

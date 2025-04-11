@@ -77,7 +77,7 @@ namespace SoundsMagic::AudioEngine
 				{
 					data.outputs[o].channelBuffers32[c][s] = sample;
 
-					//I had a different approach, but this is more efficient
+					//I had a different approach, but this is more efficient -- Visualizer Siphon
 					if(memBuff.size() < 1024) memBuff.push_back(sample);
 				}
 			}

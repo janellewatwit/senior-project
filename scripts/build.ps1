@@ -22,7 +22,7 @@ $CXXFLAGS = @("-Wall", "-std=c++17", "-DUNICODE", "-D_UNICODE")
 $OUTPUT = "shmemtest.exe"
 
 # Compile the source files (run from inside the Visualizer directory)
-& $CXX $CXXFLAGS -o $OUTPUT "shmemtest.cpp" -I"src/include" -L"src/lib" -lSDL3
+& $CXX $CXXFLAGS -o $OUTPUT "shmemtest.cpp" -I"src/include" -L"src/lib" -lSDL3 -DDEBUG
 
 Set-Location -Path "../../"
 

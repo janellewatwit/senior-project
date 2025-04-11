@@ -140,15 +140,17 @@ tresult PLUGIN_API VSTProcessor::process (Vst::ProcessData& data)
 	return kResultOk;
 }
 
-// We can move this later, but I have to work on this now.
+/*
+	This may be moved, especially considering the rather 
+*/
 void VSTProcessor::writeAudioDataToSharedMemory(size_t numSamples)
-{
-    // Ensure the buffer has data
+{ 
+    //ensure the buffer has data
     if (m_synth.memBuff.empty()) {
         return;
     }
 	else{
-		// Write the pointer to the data, not the vector itself
+		//write the pointer to the data, not the vector itself
 		VSTWriter.write(m_synth.memBuff.data(), numSamples);
 		m_synth.memBuff.clear();
 	}

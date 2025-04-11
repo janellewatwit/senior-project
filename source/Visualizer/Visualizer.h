@@ -1,5 +1,6 @@
 #pragma once
-#include "FFT.cpp"
+#include "FFT.cpp" //Generally bad practice, consider integration although this makes building easier and everything
+// since most of this code is comparible to a jenga tower. 
 #include <SDL3/SDL.h>
 #include <stdio.h>
 #include <iostream>
@@ -17,7 +18,7 @@ SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_AudioStream* stream;
 
-
+//These should probably be defined elsewhere? Very small resolution but not a deal breaker
 inline const int WINDOW_HEIGHT = 480;
 inline const int WINDOW_LENGTH = 640;
 
@@ -39,13 +40,13 @@ public:
     // Renders the bars using SDL
     void render(SDL_Renderer* renderer);
 
-    //Added to reduce required code
+    //Added to reduce required code and to integrate everything
     bool createSDLComponents();
 
-
-    //Updates
+    //Begin processing
     void start();
 
+    //End as necessary
     void stop();
 
     //Specifically updates audioData - direct step b4 processing 
@@ -79,19 +80,19 @@ private:
     //Uint8* wavBuffer;   //Buffer of EVERY sample, 0-255 (only for testing)
     //Uint32 wavLength; //How long is the audio?
 
-    float computeSize;
-    bool rainbow;
+    float computeSize; //This should correlate to fftsize
+    bool rainbow; // Flag to have rainbow play -- TODO add rainbow effect
 
-    int styleArr[4];
+    int styleArr[4]; //Nice way to dynamically alter the color, RGBA
 
-    int numBins;        // Number of frequency bins
-    int screenWidth;    // Screen width
-    int screenHeight;   // Screen height
-    int sampleRate;     // Audio sample rate (e.g., 44100 Hz)
-    int fftSize;        // FFT window size (e.g., 1024)
-    int style;
-    float binWidth;
-    float BAR_HEIGHT_MAX;
+    int numBins; // Number of frequency bins
+    int screenWidth; 
+    int screenHeight; 
+    int sampleRate; // Audio sample rate (e.g., 44100 Hz)
+    int fftSize; // FFT window size (e.g., 1024)
+    int style; //Style Argument, changes color of bars
+    float binWidth; //General binwidth -- TODO since we use log scaling this should be deprecated
+    float BAR_HEIGHT_MAX; // Style choice, the bars could go on forever and not matter, but having a scale reduces any overflow.
 
     //Its a stylistic thing more than anything practical
     const float BAR_HEIGHT_MIN = 5.0f;

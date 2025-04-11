@@ -15,7 +15,13 @@ raw audio data into frequencies which are used for representation
 	Code was cleaned
 
 
+## Message
+	I leave you all with the message: Make the most of your errors, we are human afterall. Thus, the theme of the visualizer is dance.
+
 ## Credits
 	SDL3 - https://www.libsdl.org/
-	ADD RESOURCES FOR FFT
-	
+	FFT - Cooley Tukey + GPT
+	SRC is SDL3	
+
+
+	*If you feel any work has been miscredited, feel free to reach out to: stovez112@outlook.com

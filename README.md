@@ -13,7 +13,9 @@ git clone --recursive git@github.com:janellewatwit/senior-project.git
 ```cmd
     git clone --recursive https://github.com/janellewatwit/senior-project.git
 ```
-    Code is still messy but it works.
+
+Code is still messy but it works. Additionally, in order to run the visualizer, you must open the 'shmemtext.exe'.
+
 
 ## Build
 Install [CMake](https://cmake.org/download/) and [Visual Studio 2022](https://visualstudio.microsoft.com/vs/).
